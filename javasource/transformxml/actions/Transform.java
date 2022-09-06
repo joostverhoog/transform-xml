@@ -54,25 +54,25 @@ public class Transform extends CustomJavaAction<java.lang.Void>
 		this.OutputFile = __OutputFile == null ? null : system.proxies.FileDocument.initialize(getContext(), __OutputFile);
 
 		// BEGIN USER CODE
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
 		try (InputStream xmlStream = Core.getFileDocumentContent(getContext(), __XmlFile)) {
 			try (InputStream xsltStream = Core.getFileDocumentContent(getContext(), __XsltFile)) {		
-		        Document document = builder.parse(xmlStream);
+				Document document = builder.parse(xmlStream);
 				DOMSource source = new DOMSource(document);
 				
-		        StreamSource stylesource = new StreamSource(xsltStream);
+				StreamSource stylesource = new StreamSource(xsltStream);
 				Transformer transformer = transformerFactory.newTransformer(stylesource);
 
 				try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-			        StreamResult result = new StreamResult(outputStream);
-			        
-			        transformer.transform(source, result);
-			        outputStream.flush();
-			        
-					try (ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray())) {			        
+					StreamResult result = new StreamResult(outputStream);
+
+					transformer.transform(source, result);
+					outputStream.flush();
+					
+					try (ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray())) {
 						Core.storeFileDocumentContent(getContext(), __OutputFile, inputStream);
 					}
 				}
